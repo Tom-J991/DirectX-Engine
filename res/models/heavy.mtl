@@ -1,0 +1,42 @@
+# Blender 3.4.0 MTL File: 'heavy.blend'
+# www.blender.org
+
+newmtl models_player_hvyweapon_eyeball_l
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.550000
+d 1.000000
+illum 2
+map_Kd ./res/textures/heavy/eyeball_l.png
+
+newmtl models_player_hvyweapon_eyeball_r
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.550000
+d 1.000000
+illum 2
+map_Kd ./res/textures/heavy/eyeball_r.png
+
+newmtl models_player_hvyweapon_heavy_head_red
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.550000
+d 1.000000
+illum 2
+map_Kd ./res/textures/heavy/heavy_head_red.png
+
+newmtl models_player_hvyweapon_hvyweapon_red
+Ns 250.000000
+Ka 1.000000 1.000000 1.000000
+Ks 0.500000 0.500000 0.500000
+Ke 0.000000 0.000000 0.000000
+Ni 1.550000
+d 1.000000
+illum 2
+map_Kd ./res/textures/heavy/hvyweapon_red.png
