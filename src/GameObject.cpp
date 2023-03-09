@@ -2,6 +2,7 @@
 
 namespace Objects
 {
+	// Util
 	bool RemoveElement(std::vector<GameObject*>& v, GameObject& obj)
 	{
 		auto e = v.erase(std::remove(v.begin(), v.end(), &obj), v.end());
@@ -10,7 +11,7 @@ namespace Objects
 
 		return false;
 	}
-
+	// Game Object
 	GameObject::GameObject()
 		: m_parent(nullptr)
 		, m_children()
@@ -101,6 +102,7 @@ namespace Objects
 			child.m_parent = nullptr;
 		}
 	}
+	// Model Object
 	ModelObject::ModelObject()
 		: GameObject()
 	{ }
@@ -111,6 +113,7 @@ namespace Objects
 	{
 		GameObject::Create();
 		m_meshRenderer.Create(renderer);
+		m_meshRenderer.SetModelMatrix(&m_globalTransform);
 		m_meshRenderer.LoadModel(modelPath);
 		OutputDebugString("Created");
 	}
@@ -123,7 +126,6 @@ namespace Objects
 	void ModelObject::Update()
 	{
 		GameObject::Update();
-		//m_meshRenderer.SetModelMatrix(m_globalTransform);
 		//OutputDebugString("Updating");
 	}
 	void ModelObject::Draw()

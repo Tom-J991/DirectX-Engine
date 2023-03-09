@@ -108,8 +108,8 @@ namespace Renderer
 			void Draw(Camera& camera);
 
 			const char* GetModelPath() { return m_modelFilePath; }
-			Math::Matrix4F GetModelMatrix() { return m_modelMat; }
-			void SetModelMatrix(Math::Matrix4F mat) { m_modelMat = mat; }
+			Math::Matrix4F GetModelMatrix() { return *m_modelMat; }
+			void SetModelMatrix(Math::Matrix4F* mat) { m_modelMat = mat; }
 
 		private:
 			Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
@@ -128,7 +128,7 @@ namespace Renderer
 
 			ID3D11Buffer* m_constantBuffer;
 
-			Math::Matrix4F m_modelMat;
+			Math::Matrix4F* m_modelMat;
 		};
 	}
 }

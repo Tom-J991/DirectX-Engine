@@ -24,7 +24,6 @@ namespace Renderer
 		void MeshRenderer::Create(Renderer& renderer)
 		{
 			m_renderer = renderer;
-			m_modelMat = Math::Matrix4F(1.0f);
 		}
 		void MeshRenderer::Destroy()
 		{
@@ -148,7 +147,7 @@ namespace Renderer
 		void MeshRenderer::Draw(Camera& camera)
 		{
 			// Camera
-			Math::Matrix4F m_modelViewProj = m_modelMat * camera.GetViewMatrix() * camera.GetProjectionMatrix();
+			Math::Matrix4F m_modelViewProj = *m_modelMat * camera.GetViewMatrix() * camera.GetProjectionMatrix();
 
 			// Update Constant Buffer
 			{

@@ -1,6 +1,8 @@
 #include "Game.h"
 
+#include <string>
 #include <sstream>
+
 void Game::Create()
 {
 	KeyboardInput.Create();
@@ -81,6 +83,7 @@ void Game::Update()
 		move.y = (float)moveY;
 		m_camera.SetPosition(m_camera.GetPosition() + move.Normalise() * playerSpeed * GameTime.GetDelta());
 
+		m_playerObject.Rotate(GameTime.GetDelta(), {0,1,0});
 		m_sceneRoot.Update();
 	}
 	m_camera.Update();
