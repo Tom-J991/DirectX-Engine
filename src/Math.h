@@ -134,152 +134,6 @@ namespace Math
 	};
 
 	// Matrices
-	struct Matrix3F
-	{
-		// Anonymous Struct // Allows interchangable usage of array or individual variables (Shares Memory).
-		union { 
-			struct {
-				float m00, m01, m02;
-				float m10, m11, m12;
-				float m20, m21, m22;
-			}; 
-			float m[3][3];
-		};
-
-		// Constructors
-		Matrix3F()
-			: m00(0.0f), m01(0.0f), m02(0.0f)
-			, m10(0.0f), m11(0.0f), m12(0.0f)
-			, m20(0.0f), m21(0.0f), m22(0.0f)
-		{ }
-		Matrix3F(float i)
-			: m00(i), m01(0.0f), m02(0.0f)
-			, m10(0.0f), m11(i), m12(0.0f)
-			, m20(0.0f), m21(0.0f), m22(i)
-		{ }
-		Matrix3F(float m00, float m01, float m02,
-				float m10, float m11, float m12,
-				float m20, float m21, float m22)
-			: m00(m00), m01(m01), m02(m02)
-			, m10(m10), m11(m11), m12(m12)
-			, m20(m20), m21(m21), m22(m22)
-		{ }
-		Matrix3F(Vector3F x, Vector3F y, Vector3F z)
-			: m00(x.x), m01(y.x), m02(z.x)
-			, m10(x.y), m11(y.y), m12(z.y)
-			, m20(x.z), m21(y.z), m22(z.z)
-		{ }
-
-		// Methods
-			// Scale
-		Matrix3F SetScaled(float x, float y, float z)
-		{
-			m00 = x; m01 = 0.0f; m02 = 0.0f;
-			m10 = 0.0f; m11 = y; m12 = 0.0f;
-			m20 = 0.0f; m21 = 0.0f; m22 = z;
-			return *this;
-		}
-		Matrix3F SetScaled(Vector3F v) { return SetScaled(v.x, v.y, v.z); }
-		Matrix3F SetScaled(Vector4F v) { return SetScaled(v.x, v.y, v.z); }
-		Matrix3F Scale(float x, float y, float z)
-		{
-			Matrix3F m = Matrix3F(1.0f);
-			m.SetScaled(x, y, z);
-			*this = *this * m;
-			return *this;
-		}
-		Matrix3F Scale(Vector3F v) { return Scale(v.x, v.y, v.z); }
-		Matrix3F Scale(Vector4F v) { return Scale(v.x, v.y, v.z); }
-
-			// Rotation
-		Matrix3F SetRotateX(float radians)
-		{
-			m00 = 1.0f; m01 = 0.0f; m02 = 0.0f;
-			m10 = 0.0f; m11 = cosf(radians); m12 = sinf(radians);
-			m20 = 0.0f; m21 = -sinf(radians); m22 = cosf(radians);
-			return *this;
-		}
-		Matrix3F RotateX(float radians)
-		{
-			Matrix3F m = Matrix3F(1.0f);
-			m.SetRotateX(radians);
-			*this = *this * m;
-			return *this;
-		}
-		Matrix3F SetRotateY(float radians)
-		{
-			m00 = cosf(radians); m01 = 0.0f; m02 = -sinf(radians);
-			m10 = 0.0f; m11 = 1.0f; m12 = 0.0f;
-			m20 = sinf(radians); m21 = 0.0f; m22 = cosf(radians);
-			return *this;
-		}
-		Matrix3F RotateY(float radians)
-		{
-			Matrix3F m = Matrix3F(1.0f);
-			m.SetRotateY(radians);
-			*this = *this * m;
-			return *this;
-		}
-		Matrix3F SetRotateZ(float radians)
-		{
-			m00 = cosf(radians); m01 = sinf(radians); m02 = 0.0f;
-			m10 = -sinf(radians); m11 = cosf(radians); m12 = 0.0f;
-			m20 = 0.0f; m21 = 0.0f; m22 = 1.0f;
-			return *this;
-		}
-		Matrix3F RotateZ(float radians)
-		{
-			Matrix3F m = Matrix3F(1.0f);
-			m.SetRotateZ(radians);
-			*this = *this * m;
-			return *this;
-		}
-
-			// Translation
-		Matrix3F SetTranslation(float x, float y) { m02 = x; m12 = y; return *this; }
-		Matrix3F SetTranslation(Vector2F v) { return SetTranslation(v.x, v.y); }
-		Matrix3F SetTranslation(Vector3F v) { return SetTranslation(v.x, v.y); }
-		Matrix3F SetTranslation(Vector4F v) { return SetTranslation(v.x, v.y); }
-		Matrix3F Translate(float x, float y) { m02 += x; m12 += y; return *this; }
-
-		Matrix3F SetEuler(float pitch, float yaw, float roll)
-		{
-			Matrix3F x = Matrix3F(1.0f);
-			Matrix3F y = Matrix3F(1.0f);
-			Matrix3F z = Matrix3F(1.0f);
-			x.SetRotateX(pitch);
-			y.SetRotateY(yaw);
-			z.SetRotateZ(roll);
-			*this = z * y * x;
-			return *this;
-		}
-
-		// Operator Overloads
-		friend Matrix3F operator*(const Matrix3F& a, const Matrix3F& b) 
-		{ 
-			return Matrix3F(
-				// First Row
-				a.m00*b.m00 + a.m10*b.m01 + a.m20*b.m02, // m00
-				a.m01*b.m00 + a.m11*b.m01 + a.m21*b.m02, // m01
-				a.m02*b.m00 + a.m12*b.m01 + a.m22*b.m02, // m02
-				// Second Row
- 				a.m00*b.m10 + a.m10*b.m11 + a.m20*b.m12, // m10
-				a.m01*b.m10 + a.m11*b.m11 + a.m21*b.m12, // m11
-				a.m02*b.m10 + a.m12*b.m11 + a.m22*b.m12, // m12
-				// Third Row
- 				a.m00*b.m20 + a.m10*b.m21 + a.m20*b.m22, // m20
-				a.m01*b.m20 + a.m11*b.m21 + a.m21*b.m22, // m21
-				a.m02*b.m20 + a.m12*b.m21 + a.m22*b.m22  // m22
-			);
-		}
-		friend Vector3F operator*(const Matrix3F& a, const Vector3F& b)
-		{ 
-			return Vector3F(b.x*a.m00 + b.y*a.m10 + b.z*a.m20,
-							b.x*a.m01 + b.y*a.m11 + b.z*a.m21,
-							b.x*a.m02 + b.y*a.m12 + b.z*a.m22);
-		}
-
-	};
 	struct Matrix4F
 	{
 		// Anonymous Struct // Allows interchangable usage of array or individual variables (Shares Memory).
@@ -323,75 +177,92 @@ namespace Math
 		{ }
 
 		// Methods
-			// Scale
-		Matrix4F SetScaled(float x, float y, float z)
+		void Set(float m00, float m01, float m02, float m03, float m10, float m11, float m12, float m13, float m20, float m21, float m22, float m23, float m30, float m31, float m32, float m33)
 		{
-			m00 = x; m01 = 0.0f; m02 = 0.0f; m03 = 0.0f;
-			m10 = 0.0f; m11 = y; m12 = 0.0f; m13 = 0.0f;
-			m20 = 0.0f; m21 = 0.0f; m22 = z; m23 = 0.0f;
-			m30 = 0.0f; m31 = 0.0f; m32 = 0.0f; m33 = 1.0f;
-			return *this;
+			this->m00 = m00; this->m01 = m01; this->m02 = m02; this->m03 = m03;
+			this->m10 = m10; this->m11 = m11; this->m12 = m12; this->m13 = m13;
+			this->m20 = m20; this->m21 = m21; this->m22 = m22; this->m23 = m23;
+			this->m30 = m30; this->m31 = m31; this->m32 = m32; this->m33 = m33;
 		}
-		Matrix4F SetScaled(Vector3F v) { return SetScaled(v.x, v.y, v.z); }
-		Matrix4F SetScaled(Vector4F v) { return SetScaled(v.x, v.y, v.z); }
-		Matrix4F Scale(float x, float y, float z)
+		void Set(Matrix4F m)
+		{
+			Set(m.m00, m.m01, m.m02, m.m03, m.m10, m.m11, m.m12, m.m13, m.m20, m.m21, m.m22, m.m23, m.m30, m.m31, m.m32, m.m33);
+		}
+			// Scale
+		void SetScaled(float x, float y, float z)
+		{
+			Set(
+				x, 0.0f, 0.0f, 0.0f,
+				0.0f, y, 0.0f, 0.0f,
+				0.0f, 0.0f, z, 0.0f,
+				0.0f, 0.0f, 0.0f, 1.0f
+			);
+		}
+		void SetScaled(Vector3F v) { SetScaled(v.x, v.y, v.z); }
+		void SetScaled(Vector4F v) { SetScaled(v.x, v.y, v.z); }
+		void Scale(float x, float y, float z)
 		{
 			Matrix4F m = Matrix4F(1.0f);
 			m.SetScaled(x, y, z);
-			*this = *this * m;
-			return *this;
+			Set(*this * m);
 		}
-		Matrix4F Scale(Vector3F v) { return Scale(v.x, v.y, v.z); }
-		Matrix4F Scale(Vector4F v) { return Scale(v.x, v.y, v.z); }
+		void Scale(Vector3F v) { return Scale(v.x, v.y, v.z); }
+		void Scale(Vector4F v) { return Scale(v.x, v.y, v.z); }
 
 			// Rotation
-		Matrix4F SetRotateX(float radians)
+		void SetRotateX(float radians)
 		{
-			m00 = 1.0f; m01 = 0.0f; m02 = 0.0f; m03 = 0.0f;
-			m10 = 0.0f; m11 = cosf(radians); m12 = sinf(radians); m13 = 0.0f;
-			m20 = 0.0f; m21 = -sinf(radians); m22 = cosf(radians); m23 = 0.0f;
-			m30 = 0.0f; m31 = 0.0f; m32 = 0.0f; m33 = 1.0f;
-			return *this;
+			float sin = sinf(radians);
+			float cos = cosf(radians);
+			Set(
+				1.0f, 0.0f, 0.0f, 0.0f,
+				0.0f, cos, sin, 0.0f,
+				0.0f, -sin, cos, 0.0f,
+				0.0f, 0.0f, 0.0f, 1.0f
+			);
 		}
-		Matrix4F RotateX(float radians)
+		void RotateX(float radians)
 		{
 			Matrix4F m = Matrix4F(1.0f);
 			m.SetRotateX(radians);
-			*this = *this * m;
-			return *this;
+			Set(*this * m);
 		}
-		Matrix4F SetRotateY(float radians)
+		void SetRotateY(float radians)
 		{
-			m00 = cosf(radians); m01 = 0.0f; m02 = -sinf(radians); m03 = 0.0f;
-			m10 = 0.0f; m11 = 1.0f; m12 = 0.0f; m13 = 0.0f;
-			m20 = sinf(radians); m21 = 0.0f; m22 = cosf(radians); m23 = 0.0f;
-			m30 = 0.0f; m31 = 0.0f; m32 = 0.0f; m33 = 1.0f;
-			return *this;
+			float sin = sinf(radians);
+			float cos = cosf(radians);
+			Set(
+				cos, 0.0f, -sin, 0.0f,
+				0.0f, 1.0f, 0.0f, 0.0f,
+				sin, 0.0f, cos, 0.0f,
+				0.0f, 0.0f, 0.0f, 1.0f
+			);
 		}
-		Matrix4F RotateY(float radians)
+		void RotateY(float radians)
 		{
 			Matrix4F m = Matrix4F(1.0f);
 			m.SetRotateY(radians);
-			*this = *this * m;
-			return *this;
+			Set(*this * m);
 		}
-		Matrix4F SetRotateZ(float radians)
+		void SetRotateZ(float radians)
 		{
-			m00 = cosf(radians); m01 = sinf(radians); m02 = 0.0f; m03 = 0.0f;
-			m10 = -sinf(radians); m11 = cosf(radians); m12 = 0.0f; m13 = 0.0f;
-			m20 = 0.0f; m21 = 0.0f; m22 = 1.0f; m23 = 0.0f;
-			m30 = 0.0f; m31 = 0.0f; m32 = 0.0f; m33 = 1.0f;
-			return *this;
+			float sin = sinf(radians);
+			float cos = cosf(radians);
+			Set(
+				cos, sin, 0.0f, 0.0f,
+				-sin, cos, 0.0f, 0.0f,
+				0.0f, 0.0f, 1.0f, 0.0f,
+				0.0f, 0.0f, 0.0f, 1.0f
+			);
 		}
-		Matrix4F RotateZ(float radians)
+		void RotateZ(float radians)
 		{
 			Matrix4F m = Matrix4F(1.0f);
 			m.SetRotateZ(radians);
-			*this = *this * m;
-			return *this;
+			Set(*this * m);
 		}
 
-		Matrix4F SetEuler(float pitch, float yaw, float roll)
+		void SetEuler(float pitch, float yaw, float roll)
 		{
 			Matrix4F x = Matrix4F(1.0f);
 			Matrix4F y = Matrix4F(1.0f);
@@ -399,41 +270,39 @@ namespace Math
 			x.SetRotateX(pitch);
 			y.SetRotateY(yaw);
 			z.SetRotateZ(roll);
-			*this = z * y * x;
-			return *this;
+			Set(z * y * x);
 		}
 
 			// Translation
-		Matrix4F SetTranslation(float x, float y, float z) { m03 = x; m13 = y; m23 = z; m33 = 1.0f; return *this; }
-		Matrix4F SetTranslation(Vector3F v) { return SetTranslation(v.x, v.y, v.z); }
-		Matrix4F SetTranslation(Vector4F v) { return SetTranslation(v.x, v.y, v.z); }
-		Matrix4F Translate(float x, float y, float z) { m03 += x; m13 += y; m23 += z; return *this; }
-		Matrix4F Translate(Vector3F v) { return Translate(v.x, v.y, v.z); }
-		Matrix4F Translate(Vector4F v) { return Translate(v.x, v.y, v.z); }
+		void SetTranslation(float x, float y, float z) { m03 = x; m13 = y; m23 = z; m33 = 1.0f; }
+		void SetTranslation(Vector3F v) { return SetTranslation(v.x, v.y, v.z); }
+		void SetTranslation(Vector4F v) { return SetTranslation(v.x, v.y, v.z); }
+		void Translate(float x, float y, float z) { m03 += x; m13 += y; m23 += z; }
+		void Translate(Vector3F v) { return Translate(v.x, v.y, v.z); }
+		void Translate(Vector4F v) { return Translate(v.x, v.y, v.z); }
 
 			// View
-		Matrix4F LookAt(Vector3F position, Vector3F target, Vector3F up)
+		void LookAt(Vector3F position, Vector3F target, Vector3F up)
 		{
 			// TODO:
-			return *this;
 		}
 
 			// Projection
-		Matrix4F Perspective(float aspect, float fovRadians, float zNear, float zFar)
+		void Perspective(float aspect, float fovRadians, float zNear, float zFar)
 		{
 			float yScale = tanf(0.5f * ((float)M_PI - fovRadians));
 			float xScale = yScale / aspect;
 			float zRangeInverse = 1.0f / (zNear - zFar);
 			float zScale = zFar * zRangeInverse;
 			float zTranslation = zFar * zNear * zRangeInverse;
-
-			m00 = xScale; m01 = 0.0f; m02 = 0.0f; m03 = 0.0f;
-			m10 = 0.0f; m11 = yScale; m12 = 0.0f; m13 = 0.0f;
-			m20 = 0.0f; m21 = 0.0f; m22 = zScale; m23 = zTranslation;
-			m30 = 0.0f; m31 = 0.0f; m32 = -1.0f; m33 = 0.0f;
-			return *this;
+			Set(
+				xScale, 0.0f, 0.0f, 0.0f,
+				0.0f, yScale, 0.0f, 0.0f,
+				0.0f, 0.0f, zScale, zTranslation,
+				0.0f, 0.0f, -1.0f, 0.0f
+			);
 		}
-		Matrix4F Orthographic(float scale, float left, float right, float bottom, float top, float zNear, float zFar)
+		void Orthographic(float scale, float left, float right, float bottom, float top, float zNear, float zFar)
 		{
 			float xScale = scale / (right - left);
 			float yScale = scale / (top - bottom);
@@ -444,12 +313,12 @@ namespace Math
 			//float yTranslation = -(top + bottom) / (top - bottom);
 			float yTranslation = 0.0f;
 			float zTranslation = zNear/(zNear-zFar);
-
-			m00 = xScale; m01 = 0.0f; m02 = 0.0f; m03 = 0.0f;
-			m10 = 0.0f; m11 = yScale; m12 = 0.0f; m13 = 0.0f;
-			m20 = 0.0f; m21 = 0.0f; m22 = zScale; m23 = 0.0f;
-			m30 = xTranslation; m31 = yTranslation; m32 = zTranslation; m33 = 1.0f;
-			return *this;
+			Set(
+				xScale, 0.0f, 0.0f, 0.0f,
+				0.0f, yScale, 0.0f, 0.0f,
+				0.0f, 0.0f, zScale, 0.0f,
+				xTranslation, yTranslation, zTranslation, 1.0f
+			);
 		}
 
 		// Operator Overloads

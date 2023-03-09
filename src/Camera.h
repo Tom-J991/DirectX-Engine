@@ -20,10 +20,7 @@ namespace Renderer
 	{
 	public:
 		Camera();
-		Camera(Math::Vector3F position, float pitch, float yaw);
-		Camera(Math::Vector3F position, float pitch, float yaw, float roll);
-		Camera(Math::Vector3F position, Math::Vector3F forward, float pitch, float yaw);
-		Camera(Math::Vector3F position, Math::Vector3F forward, float pitch, float yaw, float roll);
+		Camera(Math::Vector3F forward);
 		~Camera();
 
 		void CreatePerspective(Window& window, float fov, float zNear, float zFar);
@@ -31,49 +28,37 @@ namespace Renderer
 		void Destroy();
 		 
 		void Update();
-		void Draw();
+		void Draw(Math::Matrix4F& viewMat);
 
 		// Setters
-		Math::Vector3F SetPosition(Math::Vector3F position) { m_position = position; return m_position; }
-		Math::Vector3F SetPosition(float x, float y, float z) { m_position = {x, y, z}; return m_position; }
-
-		float SetPitch(float pitch) { m_pitch = pitch; return this->m_pitch; }
-		float SetYaw(float yaw) { m_yaw = yaw; return this->m_yaw; }
-		float SetRoll(float roll) { m_roll = roll; return this->m_roll; }
-		float SetFOV(float fov) { m_fov = fov; return this->m_fov; }
+		float SetFOV(float fov) { if (m_type == ORTHOGRAPHIC || m_type == NONE) return 0.0f; m_fov = fov; return this->m_fov; }
+		float SetScale(float scale) { if (m_type == PERSPECTIVE || m_type == NONE) return 0.0f; m_scale = scale; return this->m_scale; }
 
 		// Getters
 		CameraTypes GetType() { return m_type; }
 
-		Math::Vector3F GetPosition() { return m_position; }
 		Math::Vector3F GetForward() { return m_forward; }
 		Math::Vector3F GetRight() { return m_right; }
-		float GetPitch() { return m_pitch; }
-		float GetYaw() { return m_yaw; }
-		float GetRoll() { return m_roll; }
 		float GetFOV() { return m_fov; }
+		float GetScale() { return m_scale; }
 		float GetNear() { return m_zNear; }
 		float GetFar() { return m_zFar; }
 
 		Math::Matrix4F GetProjectionMatrix() { return m_projectionMat; }
-		Math::Matrix4F GetViewMatrix() { return m_viewMat; }
+		Math::Matrix4F GetViewMatrix() { return *m_viewMat; }
 
 	private:
 		CameraTypes m_type;
 
-		Math::Vector3F m_position;
 		Math::Vector3F m_forward;
 		Math::Vector3F m_right;
-		float m_pitch;
-		float m_yaw;
-		float m_roll;
 		float m_fov; // Perspective Only
 		float m_scale; // Orthographic Only
 		float m_zNear;
 		float m_zFar;
 
 		Math::Matrix4F m_projectionMat;
-		Math::Matrix4F m_viewMat;
+		Math::Matrix4F* m_viewMat;
 
 	};
 }

@@ -102,6 +102,62 @@ namespace Objects
 			child.m_parent = nullptr;
 		}
 	}
+	// Camera Object
+	CameraObject::CameraObject()
+		: GameObject()
+	{ }
+	CameraObject::~CameraObject()
+	{ }
+
+	void CameraObject::Create(Window& window)
+	{
+		GameObject::Create();
+		m_camera = Renderer::Camera();
+		m_camera.CreatePerspective(window, 75.0f, 0.01f, 1000.0f);
+	}
+	void CameraObject::Destroy()
+	{
+		GameObject::Destroy();
+		m_camera.Destroy();
+	}
+
+	void CameraObject::Update()
+	{
+		// Looking
+		static float lastMouseX = 0.0f, lastMouseY = 0.0f;
+		yaw = (MouseInput.x - lastMouseX) * turnSpeed;
+		pitch = (MouseInput.y - lastMouseY) * turnSpeed;
+		lastMouseX = MouseInput.x; lastMouseY = MouseInput.y;
+		// Constrain Camera Pitch
+		if (pitch >= Math::DegreesToRadians(89.0f))
+			pitch = Math::DegreesToRadians(89.0f);
+		if (pitch <= Math::DegreesToRadians(-89.0f))
+			pitch = Math::DegreesToRadians(-89.0f);
+		if (KeyboardInput.IsKeyDown('R'))
+		{
+			// Reset View Rotation
+			yaw = 0.0f; pitch = 0.0f;
+		}
+		// Walking
+		Math::Vector3F move = Math::Vector3F();
+		int moveX = KeyboardInput.IsKeyPressed('A') - KeyboardInput.IsKeyPressed('D');
+		int moveY = KeyboardInput.IsKeyPressed(VK_SPACE) - KeyboardInput.IsKeyPressed(VK_CONTROL);
+		int moveZ = KeyboardInput.IsKeyPressed('W') - KeyboardInput.IsKeyPressed('S');
+		move = m_camera.GetRight() * (float)moveX + m_camera.GetForward() * (float)moveZ;
+		move.y = (float)moveY;
+		// Move
+		Rotate(-yaw, { 0, 1, 0 });
+		Rotate(-pitch, { 1, 0, 0 });
+		Translate(-move.Normalise() * moveSpeed * GameTime.GetDelta());
+		// Update
+		m_camera.Update();
+		GameObject::Update();
+	}
+	void CameraObject::Draw()
+	{
+		m_camera.Draw(m_globalTransform);
+		GameObject::Draw();
+	}
 	// Model Object
 	ModelObject::ModelObject()
 		: GameObject()
@@ -124,36 +180,11 @@ namespace Objects
 	void ModelObject::Update()
 	{
 		GameObject::Update();
-		//OutputDebugString("Updating");
 	}
 	void ModelObject::Draw()
 	{
-		GameObject::Draw();
-		m_meshRenderer.Draw(m_globalTransform, *m_camera);
-		//OutputDebugString("Drawing");
-	}
-
-	CameraObject::CameraObject()
-		: GameObject()
-	{ }
-	CameraObject::~CameraObject()
-	{ }
-
-	void CameraObject::Create()
-	{
-		GameObject::Create();
-	}
-	void CameraObject::Destroy()
-	{
-		GameObject::Destroy();
-	}
-
-	void CameraObject::Update()
-	{
-		GameObject::Update();
-	}
-	void CameraObject::Draw()
-	{
+		Renderer::Camera* c = &m_camera->GetCameraRenderer();
+		m_meshRenderer.Draw(m_globalTransform, *c);
 		GameObject::Draw();
 	}
 }

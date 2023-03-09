@@ -2,8 +2,12 @@
 
 #include "Common.h"
 #include "Math.h"
+#include "Timing.h"
 
+#include "Input.h"
+#include "Window.h"
 #include "Renderer.h"
+#include "Camera.h"
 #include "Meshes.h"
 
 #include <vector>
@@ -50,7 +54,7 @@ namespace Objects
 
 		Math::Vector3F GetTranslation() 
 		{ 
-			return Math::Vector3F(m_globalTransform.m30, m_globalTransform.m31, m_globalTransform.m32); 
+			return Math::Vector3F(m_globalTransform.m03, m_globalTransform.m13, m_globalTransform.m23); 
 		}
 		Math::Vector3F GetScale() 
 		{ 
@@ -75,7 +79,31 @@ namespace Objects
 		Math::Matrix4F m_globalTransform;
 
 	};
+	class CameraObject : public GameObject
+	{
+	public:
+		CameraObject();
+		~CameraObject();
 
+		void Create(Window& window);
+		void Destroy() override;
+
+		void Update() override;
+		void Draw() override;
+
+		Renderer::Camera& GetCameraRenderer() { return m_camera; }
+
+	public:
+		float turnSpeed = 0.0012f;
+		float moveSpeed = 0.8f;
+
+		float yaw = 0.0f;
+		float pitch = 0.0f;
+
+	private:
+		Renderer::Camera m_camera;
+
+	};
 	class ModelObject : public GameObject
 	{
 	public:
@@ -88,30 +116,11 @@ namespace Objects
 		void Update() override;
 		void Draw() override;
 
-		void SetCamera(Renderer::Camera* camera) { m_camera = camera; }
+		void SetCamera(CameraObject* camera) { m_camera = camera; }
 
 	private:
 		Renderer::Meshes::MeshRenderer m_meshRenderer;
-		Renderer::Camera* m_camera;
-
-	};
-
-	class CameraObject : public GameObject
-	{
-	public:
-		CameraObject();
-		~CameraObject();
-
-		void Create() override;
-		void Destroy() override;
-
-		void Update() override;
-		void Draw() override;
-
-		Renderer::Camera GetCameraRenderer() { return m_camera; }
-
-	private:
-		Renderer::Camera m_camera;
+		CameraObject* m_camera;
 
 	};
 }

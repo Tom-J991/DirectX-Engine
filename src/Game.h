@@ -10,9 +10,7 @@
 #include "Renderer.h"
 #include "Audio.h"
 
-#include "Camera.h"
 #include "GameObject.h"
-#include "Meshes.h"
 
 class Game
 {
@@ -30,9 +28,8 @@ private:
 	Renderer::Renderer m_renderer;
 	AudioEngine::AudioEngine m_audioEngine;
 
-	Renderer::Camera m_camera;
-
 	Objects::GameObject m_sceneRoot;
+	Objects::CameraObject m_cameraObject;
 	Objects::ModelObject m_playerObject;
 
 public:
