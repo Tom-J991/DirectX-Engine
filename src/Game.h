@@ -11,7 +11,8 @@
 #include "Audio.h"
 
 #include "Camera.h"
-#include "Objects.h"
+#include "GameObject.h"
+#include "Meshes.h"
 
 class Game
 {
@@ -30,7 +31,9 @@ private:
 	AudioEngine::AudioEngine m_audioEngine;
 
 	Renderer::Camera m_camera;
-	Renderer::Objects::TexturedModel m_player;
+
+	Objects::GameObject m_sceneRoot;
+	Objects::ModelObject m_playerObject;
 
 public:
 	// Singleton Design Pattern

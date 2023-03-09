@@ -3,46 +3,96 @@
 #include "Common.h"
 #include "Math.h"
 
+#include "Renderer.h"
+#include "Meshes.h"
+
 #include <vector>
 
-class GameObject
+namespace Objects
 {
-public:
-	GameObject();
-	~GameObject();
+	class GameObject
+	{
+	public:
+		GameObject();
+		~GameObject();
 
-	virtual void Update(float deltaTime);
-	virtual void Draw();
+		virtual void Create();
+		virtual void Destroy();
 
-	void UpdateTranform();
+		virtual void Update();
+		virtual void Draw();
 
-	void SetPosition(float x, float y);
-	void SetPosition(Math::Vector2F v) { SetPosition(v.x, v.y); }
-	void SetScale(float width, float height);
-	void SetScale(Math::Vector2F v) { SetScale(v.x, v.y); }
-	void SetRotate(float radians);
+		void UpdateTranform();
 
-	void Translate(float x, float y);
-	void Translate(Math::Vector2F v) { Translate(v.x, v.y); }
-	void Scale(float width, float height);
-	void Scale(Math::Vector2F v) { Scale(v.x, v.y); }
-	void Rotate(float radians);
+		void SetPosition(float x, float y, float z);
+		void SetPosition(Math::Vector3F v) { SetPosition(v.x, v.y, v.z); }
+		void SetScale(float width, float height, float depth);
+		void SetScale(Math::Vector3F v) { SetScale(v.x, v.y, v.z); }
+		void SetRotate(float radians, float axisX, float axisY, float axisZ);
+		void SetRotate(float radians, Math::Vector3F v) { SetRotate(radians, v.x, v.y, v.z); };
 
-	void AddChild(GameObject& child);
-	void RemoveChild(GameObject& child);
+		void Translate(float x, float y, float z);
+		void Translate(Math::Vector3F v) { Translate(v.x, v.y, v.z); }
+		void Scale(float width, float height, float depth);
+		void Scale(Math::Vector3F v) { Scale(v.x, v.y, v.z); }
+		void Rotate(float radians, float axisX, float axisY, float axisZ);
+		void Rotate(float radians, Math::Vector3F v) { Rotate(radians, v.x, v.y, v.z); };
 
-	GameObject GetParent() { return m_parent; }
-	GameObject GetChild(int index) { return m_children[index]; }
-	int GetChildCount() { return m_children.size(); }
+		void AddChild(GameObject& child);
+		void RemoveChild(GameObject& child);
 
-	Math::Matrix3F GetLocalTransform() { return m_localTransform; }
-	Math::Matrix3F GetGlobalTransform() { return m_globalTransform; }
+		GameObject* GetParent() { return m_parent; }
+		GameObject* GetChild(int index) { return m_children[index]; }
+		int GetChildCount() { return m_children.size(); }
 
-protected:
-	GameObject& m_parent;
-	std::vector<GameObject> m_children;
+		Math::Matrix4F GetLocalTransform() { return m_localTransform; }
+		Math::Matrix4F GetGlobalTransform() { return m_globalTransform; }
 
-	Math::Matrix3F m_localTransform;
-	Math::Matrix3F m_globalTransform;
+		Math::Vector3F GetTranslation() 
+		{ 
+			return Math::Vector3F(m_globalTransform.m30, m_globalTransform.m31, m_globalTransform.m32); 
+		}
+		Math::Vector3F GetScale() 
+		{ 
+			float xAxis = Math::Vector3F(m_globalTransform.m00, m_globalTransform.m01, m_globalTransform.m02).Magnitude();
+			float yAxis = Math::Vector3F(m_globalTransform.m10, m_globalTransform.m11, m_globalTransform.m12).Magnitude();
+			float zAxis = Math::Vector3F(m_globalTransform.m20, m_globalTransform.m21, m_globalTransform.m22).Magnitude();
+			return Math::Vector3F(xAxis, yAxis, zAxis);
+		}
+		Math::Vector3F GetRotation() 
+		{ 
+			float xAxis = atan2f(m_globalTransform.m12, m_globalTransform.m11);
+			float yAxis = atan2f(m_globalTransform.m20, m_globalTransform.m00);
+			float zAxis = atan2f(m_globalTransform.m01, m_globalTransform.m00);
+			return Math::Vector3F(xAxis, yAxis, zAxis); 
+		}
 
-};
+	protected:
+		GameObject* m_parent;
+		std::vector<GameObject*> m_children;
+
+		Math::Matrix4F m_localTransform;
+		Math::Matrix4F m_globalTransform;
+
+	};
+
+	class ModelObject : public GameObject
+	{
+	public:
+		ModelObject();
+		~ModelObject();
+
+		void Create(Renderer::Renderer& renderer, const char* modelPath);
+		void Destroy() override;
+
+		void Update() override;
+		void Draw() override;
+
+		void SetCamera(Renderer::Camera* camera) { m_camera = camera; }
+
+	private:
+		Renderer::Meshes::MeshRenderer m_meshRenderer;
+		Renderer::Camera* m_camera;
+
+	};
+}

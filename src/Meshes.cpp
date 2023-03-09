@@ -1,4 +1,4 @@
-#include "Objects.h"
+#include "Meshes.h"
 
 #include <string>
 #include <math.h>
@@ -13,27 +13,27 @@ struct Constants
 
 namespace Renderer
 {
-	namespace Objects
+	namespace Meshes
 	{
-		TexturedModel::TexturedModel()
+		MeshRenderer::MeshRenderer()
 			: m_constantBuffer(nullptr)
 		{ }
-		TexturedModel::~TexturedModel()
+		MeshRenderer::~MeshRenderer()
 		{ }
 
-		void TexturedModel::Create(Renderer& renderer)
+		void MeshRenderer::Create(Renderer& renderer)
 		{
 			m_renderer = renderer;
 			m_modelMat = Math::Matrix4F(1.0f);
 		}
-		void TexturedModel::Destroy()
+		void MeshRenderer::Destroy()
 		{
 			for (auto m : m_meshes)
 				m.Destroy();
 			m_constantBuffer->Release();
 		}
 
-		Mesh TexturedModel::ProcessMesh(aiMesh* mesh, const aiScene* scene)
+		Mesh MeshRenderer::ProcessMesh(aiMesh* mesh, const aiScene* scene)
 		{
 			std::vector<TexVertex3D> meshData;
 			std::vector<uint16_t> indiceData;
@@ -104,7 +104,7 @@ namespace Renderer
 
 			return m;
 		}
-		void TexturedModel::ProcessNode(aiNode* node, const aiScene* scene)
+		void MeshRenderer::ProcessNode(aiNode* node, const aiScene* scene)
 		{
 			for (unsigned int i = 0; i < node->mNumMeshes; ++i)
 			{
@@ -117,7 +117,7 @@ namespace Renderer
 			}
 		}
 
-		void TexturedModel::LoadModel(const char* filePath, const wchar_t* shaderPath)
+		void MeshRenderer::LoadModel(const char* filePath, const wchar_t* shaderPath)
 		{
 			m_modelFilePath = filePath;
 			// Load Model
@@ -145,10 +145,10 @@ namespace Renderer
 			}
 		}
 
-		void TexturedModel::Draw(Camera& camera)
+		void MeshRenderer::Draw(Camera& camera)
 		{
 			// Camera
-			m_modelViewProj = m_modelMat * camera.GetViewMatrix() * camera.GetProjectionMatrix();
+			Math::Matrix4F m_modelViewProj = m_modelMat * camera.GetViewMatrix() * camera.GetProjectionMatrix();
 
 			// Update Constant Buffer
 			{

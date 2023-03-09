@@ -1,5 +1,6 @@
 #include "Game.h"
 
+#include <sstream>
 void Game::Create()
 {
 	KeyboardInput.Create();
@@ -12,8 +13,13 @@ void Game::Create()
 		m_camera = Renderer::Camera({ 0, .35f, .1f }, 0.0f, 0.0f);
 		m_camera.CreatePerspective(m_window, 75.0f, 0.01f, 1000.0f);
 
-		m_player.Create(m_renderer);
-		m_player.LoadModel("./res/models/heavy.obj");
+		m_sceneRoot = Objects::GameObject();
+		m_sceneRoot.Create();
+		m_playerObject = Objects::ModelObject();
+		m_playerObject.Create(m_renderer, "./res/models/heavy.obj");
+		m_playerObject.SetCamera(&m_camera);
+
+		m_sceneRoot.AddChild(m_playerObject);
 
 		m_audioEngine.PlayAudio("./res/sounds/test.ogg", 0.1f);
 		//m_audioEngine.PlayMusic("./res/sounds/music/streamed/rivaldealer.ogg", 0.5f);
@@ -28,7 +34,8 @@ void Game::Destroy()
 	KeyboardInput.Destroy();
 	{
 		// Destroy here..
-		m_player.Destroy();
+		m_playerObject.Destroy();
+		m_sceneRoot.Destroy();
 		m_camera.Destroy();
 
 		m_audioEngine.UnloadAudio("./res/sounds/test.ogg");
@@ -39,6 +46,7 @@ void Game::Destroy()
 
 float cameraSpeed = 0.0012f;
 float playerSpeed = 0.8f;
+std::stringstream r;
 void Game::Update()
 {
 	KeyboardInput.Update();
@@ -72,6 +80,8 @@ void Game::Update()
 		move = m_camera.GetRight() * (float)moveX + m_camera.GetForward() * (float)moveZ;
 		move.y = (float)moveY;
 		m_camera.SetPosition(m_camera.GetPosition() + move.Normalise() * playerSpeed * GameTime.GetDelta());
+
+		m_sceneRoot.Update();
 	}
 	m_camera.Update();
 	m_audioEngine.Update();
@@ -91,7 +101,7 @@ void Game::Draw()
 		// Draw here..
 		//
 		m_camera.Draw();
-		m_player.Draw(m_camera);
+		m_sceneRoot.Draw();
 	}
 	m_renderer.EndFrame();
 }

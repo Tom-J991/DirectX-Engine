@@ -14,7 +14,7 @@
 
 namespace Renderer
 {
-	namespace Objects
+	namespace Meshes
 	{
 		struct TexVertex2D
 		{
@@ -94,11 +94,11 @@ namespace Renderer
 			void Destroy();
 		};
 
-		class TexturedModel
+		class MeshRenderer
 		{
 		public:
-			TexturedModel();
-			~TexturedModel();
+			MeshRenderer();
+			~MeshRenderer();
 
 			void Create(Renderer& renderer);
 			void Destroy();
@@ -129,7 +129,6 @@ namespace Renderer
 			ID3D11Buffer* m_constantBuffer;
 
 			Math::Matrix4F m_modelMat;
-			Math::Matrix4F m_modelViewProj;
 		};
 	}
 }
