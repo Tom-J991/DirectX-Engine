@@ -113,9 +113,7 @@ namespace Objects
 	{
 		GameObject::Create();
 		m_meshRenderer.Create(renderer);
-		m_meshRenderer.SetModelMatrix(&m_globalTransform);
 		m_meshRenderer.LoadModel(modelPath);
-		OutputDebugString("Created");
 	}
 	void ModelObject::Destroy()
 	{
@@ -131,7 +129,31 @@ namespace Objects
 	void ModelObject::Draw()
 	{
 		GameObject::Draw();
-		m_meshRenderer.Draw(*m_camera);
+		m_meshRenderer.Draw(m_globalTransform, *m_camera);
 		//OutputDebugString("Drawing");
+	}
+
+	CameraObject::CameraObject()
+		: GameObject()
+	{ }
+	CameraObject::~CameraObject()
+	{ }
+
+	void CameraObject::Create()
+	{
+		GameObject::Create();
+	}
+	void CameraObject::Destroy()
+	{
+		GameObject::Destroy();
+	}
+
+	void CameraObject::Update()
+	{
+		GameObject::Update();
+	}
+	void CameraObject::Draw()
+	{
+		GameObject::Draw();
 	}
 }

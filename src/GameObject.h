@@ -95,4 +95,23 @@ namespace Objects
 		Renderer::Camera* m_camera;
 
 	};
+
+	class CameraObject : public GameObject
+	{
+	public:
+		CameraObject();
+		~CameraObject();
+
+		void Create() override;
+		void Destroy() override;
+
+		void Update() override;
+		void Draw() override;
+
+		Renderer::Camera GetCameraRenderer() { return m_camera; }
+
+	private:
+		Renderer::Camera m_camera;
+
+	};
 }

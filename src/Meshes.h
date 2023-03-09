@@ -105,11 +105,9 @@ namespace Renderer
 
 			void LoadModel(const char* filePath, const wchar_t* shaderPath = L"./res/shaders/modelShader.hlsl");
 
-			void Draw(Camera& camera);
+			void Draw(Math::Matrix4F& modelMat, Camera& camera);
 
 			const char* GetModelPath() { return m_modelFilePath; }
-			Math::Matrix4F GetModelMatrix() { return *m_modelMat; }
-			void SetModelMatrix(Math::Matrix4F* mat) { m_modelMat = mat; }
 
 		private:
 			Mesh ProcessMesh(aiMesh* mesh, const aiScene* scene);
@@ -127,8 +125,6 @@ namespace Renderer
 			const char* m_modelFilePath;
 
 			ID3D11Buffer* m_constantBuffer;
-
-			Math::Matrix4F* m_modelMat;
 		};
 	}
 }

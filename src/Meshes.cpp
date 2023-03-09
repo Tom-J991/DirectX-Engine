@@ -144,10 +144,10 @@ namespace Renderer
 			}
 		}
 
-		void MeshRenderer::Draw(Camera& camera)
+		void MeshRenderer::Draw(Math::Matrix4F& modelMat, Camera& camera)
 		{
 			// Camera
-			Math::Matrix4F m_modelViewProj = *m_modelMat * camera.GetViewMatrix() * camera.GetProjectionMatrix();
+			Math::Matrix4F m_modelViewProj = modelMat * camera.GetViewMatrix() * camera.GetProjectionMatrix();
 
 			// Update Constant Buffer
 			{
